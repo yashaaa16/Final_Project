@@ -65,7 +65,7 @@ const StockMovement = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Stock Movements</h1>
-      <form onSubmit={handleSubmit} className="mb-6 space-y-4 bg-white p-4 rounded shadow max-w-xl">
+      <form onSubmit={handleSubmit} className="mb-6 space-y-4 bg-white p-4 rounded shadow w-[730px] h-[150px]">
         <div className="flex gap-4">
           <select
             name="product_id"

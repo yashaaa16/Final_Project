@@ -143,7 +143,7 @@ const Products = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Products</h1>
-      <form onSubmit={handleSubmit} className="mb-6 space-y-4 bg-white p-4 rounded shadow max-w-xl">
+      <form onSubmit={handleSubmit} className="mb-6 space-y-4 bg-white p-9 rounded shadow w-[700px] h-[300px]">
         <div className="flex gap-4">
           <input
             name="name"

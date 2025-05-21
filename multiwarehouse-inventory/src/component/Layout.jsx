@@ -9,7 +9,7 @@ const Layout = () => (
         <Sidebar />
       </div>
       {/* Main content with left margin to accommodate sidebar */}
-      <div className="flex-1 p-6 bg-gray-100 min-h-screen ml-64">
+      <div className="flex-1 p-3 bg-gray-100 min-h-screen ml-64">
         <Outlet />
       </div>
     </div>
