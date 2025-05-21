@@ -17,14 +17,17 @@ const supabase = createClient(
 );
 
 import productRoutes from './routes/product.js';
-import supplierRoutes from './routes/supplier.js';
 import warehouseRoutes from './routes/warehouse.js';
-
-
+import stockRoutes from './routes/stock.js';
+import stockmovementRoutes from './routes/stockmovements.js';
+import supplierRouter from './routes/suppliers.js';
+import authRouter from './routes/auth.js';
+app.use('/api/auth', authRouter);
+app.use('/api/suppliers', supplierRouter);
 app.use('/api/products', productRoutes);
-app.use('/api/suppliers', supplierRoutes);
 app.use('/api/warehouses', warehouseRoutes);
-app.use('/api/products', productRoutes);
+app.use('/api/stock', stockRoutes);
+app.use('/api/stockmovement', stockmovementRoutes);
 // Example route
 app.get('/', (req, res) => {
   res.send('Multiwarehouse Inventory API is running');

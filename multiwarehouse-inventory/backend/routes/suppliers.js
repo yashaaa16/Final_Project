@@ -1,10 +1,16 @@
 import express from 'express';
 import supabase from '../supabaseclient.js';
+
 const router = express.Router();
 
-// CREATE a new supplier
+// CREATE supplier record
 router.post('/', async (req, res) => {
   const { company_name, contact_info } = req.body;
+  
+  // Validate required fields
+  if (!company_name) {
+    return res.status(400).json({ error: 'Company name is required' });
+  }
   
   const { data, error } = await supabase
     .from('suppliers')
@@ -20,18 +26,18 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   const { data, error } = await supabase
     .from('suppliers')
-    .select('*, products(*)')
-    .order('company_name', { ascending: true });
+    .select('*')
+    .order('id', { ascending: true });
 
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// READ a single supplier by id
+// READ supplier by id
 router.get('/:id', async (req, res) => {
   const { data, error } = await supabase
     .from('suppliers')
-    .select('*, products(*)')
+    .select('*')
     .eq('id', req.params.id)
     .single();
 
@@ -39,52 +45,39 @@ router.get('/:id', async (req, res) => {
   res.json(data);
 });
 
-// READ products by supplier id
-router.get('/:id/products', async (req, res) => {
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('supplier_id', req.params.id);
-
-  if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
-});
-
-// UPDATE a supplier by id
+// UPDATE supplier
 router.put('/:id', async (req, res) => {
   const { company_name, contact_info } = req.body;
+  const updates = {};
   
+  // Only update fields that are provided
+  if (company_name !== undefined) updates.company_name = company_name;
+  if (contact_info !== undefined) updates.contact_info = contact_info;
+  
+  // Check if there are any updates to make
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ error: 'No update data provided' });
+  }
+
   const { data, error } = await supabase
     .from('suppliers')
-    .update({ company_name, contact_info })
+    .update(updates)
     .eq('id', req.params.id)
     .select()
     .single();
 
-  if (error) return res.status(404).json({ error: 'Supplier not found' });
+  if (error) return res.status(404).json({ error: 'Supplier not found or update failed' });
   res.json(data);
 });
 
-// DELETE a supplier by id
+// DELETE supplier
 router.delete('/:id', async (req, res) => {
-  // First check if supplier has any products
-  const { data: products } = await supabase
-    .from('products')
-    .select('id')
-    .eq('supplier_id', req.params.id);
-  
-  if (products && products.length > 0) {
-    return res.status(400).json({ 
-      error: 'Cannot delete supplier with associated products. Please reassign or delete the products first.' 
-    });
-  }
-
   const { error } = await supabase
     .from('suppliers')
     .delete()
     .eq('id', req.params.id);
 
-  if (error) return res.status(404).json({ error: 'Supplier not found or could not be deleted' });
+  if (error) return res.status(404).json({ error: 'Supplier not found or deletion failed' });
   res.json({ message: 'Supplier deleted successfully' });
 });
 
